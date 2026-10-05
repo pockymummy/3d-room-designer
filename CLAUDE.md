@@ -17,12 +17,13 @@ There is no test runner or linter configured; `pnpm build` is the only correctne
 
 ## Architecture
 
-Personal 3D room designer (condo layout: furniture, wallpaper, floor tiles), built with vanilla Three.js + Vite + TypeScript (no UI framework; see ADR 0002).
+Personal 3D room designer (condo layout: furniture, wallpaper, floor tiles), built with vanilla Three.js + Vite + TypeScript, with React for UI panels only (ADR 0002, ADR 0005).
 
 The room is **data rendered by a builder** (ADR 0004):
 - `src/room.ts` — `RoomConfig` interface and `buildRoom(config)`, which returns a `THREE.Group` (floor + four walls).
 - `src/defaultRoom.ts` — the hard-coded sample `RoomConfig`.
-- `src/main.ts` — scene setup only: renderer, camera, OrbitControls, lights, resize handling and the render loop. It builds the room from `defaultRoom`.
+- `src/main.ts` — scene setup: renderer, camera, OrbitControls, lights, resize handling and the render loop. It copies `defaultRoom` into a mutable config, builds the room, and re-runs `rebuildRoom()` when the UI changes the config.
+- `src/ui/` — React panels (`mountUi`, `ColorPanel`). They mutate the config and call the rebuild callback; they never touch scene objects.
 
 Future features (floor-plan editor, material swapping, furniture, save/load, undo/redo) are expected to mutate/serialize the config object and re-run the builder, so keep room state in `RoomConfig` rather than in scene objects. The config is intentionally minimal (rectangular room, flat colors) and may be replaced by a wall/polygon model.
 

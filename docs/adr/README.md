@@ -10,6 +10,7 @@ Status values: `Proposed`, `Accepted`, `Deprecated`, `Superseded by NNNN`.
 | # | Title | Status |
 |---|-------|--------|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
-| [0002](0002-use-vanilla-threejs-vite-typescript.md) | Use vanilla Three.js, Vite and TypeScript | Accepted |
+| [0002](0002-use-vanilla-threejs-vite-typescript.md) | Use vanilla Three.js, Vite and TypeScript | Accepted (UI-framework part superseded by 0005) |
 | [0003](0003-use-pnpm-and-exact-version-pins.md) | Use pnpm and exact version pins | Accepted |
 | [0004](0004-room-as-data-config.md) | Describe the room as data, rendered by a builder | Accepted |
+| [0005](0005-add-react-for-ui.md) | Add React for UI panels | Accepted |

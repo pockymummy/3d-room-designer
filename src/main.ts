@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { defaultRoom } from './defaultRoom';
 import { buildRoom } from './room';
+import { mountUi } from './ui/mountUi';
 
 const container = document.getElementById('app')!;
 
@@ -27,7 +28,25 @@ sun.position.set(5, 8, 4);
 sun.castShadow = true;
 scene.add(sun);
 
-scene.add(buildRoom(defaultRoom));
+const config = { ...defaultRoom };
+let room: THREE.Group | undefined;
+
+function rebuildRoom() {
+  if (room) {
+    scene.remove(room);
+    room.traverse((obj) => {
+      if (obj instanceof THREE.Mesh) {
+        obj.geometry.dispose();
+        obj.material.dispose();
+      }
+    });
+  }
+  room = buildRoom(config);
+  scene.add(room);
+}
+
+rebuildRoom();
+mountUi(document.getElementById('ui')!, config, rebuildRoom);
 
 function resize() {
   const { clientWidth: w, clientHeight: h } = container;
