@@ -16,7 +16,7 @@ pnpm check:arch   # dependency-cruiser: architecture boundaries (ADR 0006)
 pnpm e2e          # Playwright end-to-end tests in tests/ (starts pnpm dev itself)
 ```
 
-Run all four checks (`pnpm test`, `pnpm check:arch`, `pnpm build`, `pnpm e2e`) before calling work done. TS is strict, with `noUnusedLocals`/`noUnusedParameters`, `noUncheckedIndexedAccess`, `verbatimModuleSyntax` and `noFallthroughCasesInSwitch`. There is no linter. Write tests first: red, green, refactor (ADR 0007).
+Run all four checks (`pnpm test`, `pnpm check:arch`, `pnpm build`, `pnpm e2e`) before calling work done. TS is strict, with `noUnusedLocals`/`noUnusedParameters`, `noUncheckedIndexedAccess`, `verbatimModuleSyntax` and `noFallthroughCasesInSwitch`. There is no linter. Write tests first: red, green, refactor. Follow the project skill `tdd` (`.claude/skills/tdd/SKILL.md`); the reasoning is in ADR 0010.
 
 ## Architecture
 

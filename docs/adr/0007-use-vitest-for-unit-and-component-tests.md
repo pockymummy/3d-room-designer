@@ -10,7 +10,7 @@
 - **Vitest** (pinned exact) reuses `vite.config.ts` through `vitest.config.ts`. Tests live next to the code as `src/**/*.test.ts(x)`; `pnpm test` runs `vitest run`.
 - Default environment is Node: core and layout tests run without a DOM, so accidental DOM use throws. Component and integration tests opt in per file with `// @vitest-environment jsdom` and use Testing Library.
 - Playwright specs (`tests/`, `specs/`) are not matched by Vitest.
-- Tests are written test-first (red, green, refactor); characterization tests ("pins") are written before refactoring existing code.
+- Tests are written test-first (red, green, refactor); characterization tests ("pins") are written before refactoring existing code. The method is recorded in ADR 0010.
 - Core tests assert state with real objects (Chicago style); the UI boundary asserts the commands it dispatches.
 
 ## Consequences

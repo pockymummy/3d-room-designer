@@ -18,3 +18,4 @@ Status values: `Proposed`, `Accepted`, `Deprecated`, `Superseded by NNNN`.
 | [0007](0007-use-vitest-for-unit-and-component-tests.md) | Use Vitest for unit and component tests | Accepted |
 | [0008](0008-playwright-end-to-end-tests.md) | Playwright end-to-end tests | Accepted |
 | [0009](0009-in-page-color-picker-react-colorful.md) | In-page color picker (react-colorful) | Accepted |
+| [0010](0010-test-first-development.md) | Test-first development (TDD) | Accepted |
