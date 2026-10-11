@@ -9,20 +9,32 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build": "tsc --noEmit && tsc -p tsconfig.core.json --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "check:arch": "depcruise src --config .dependency-cruiser.cjs"
   },
   "dependencies": {
     "react": "19.3.0",
+    "react-colorful": "5.8.1",
     "react-dom": "19.3.0",
     "three": "0.186.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@swc/core": "1.16.13",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/three": "0.186.0",
     "@vitejs/plugin-react": "6.1.1",
+    "dependency-cruiser": "18.5.0",
+    "jsdom": "30.1.2",
     "typescript": "7.0.2",
-    "vite": "8.3.2"
+    "vite": "8.3.2",
+    "vitest": "5.0.3"
   }
 }

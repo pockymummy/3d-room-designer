@@ -1,0 +1,12 @@
+{
+  // The pure core is checked without browser or bundler globals: no DOM lib, no vite/client types.
+  // A stray `document`, `window` or `import.meta.env` here is a compile error.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": [],
+    "jsx": "preserve"
+  },
+  "include": ["src/core", "src/layout.ts", "src/roomConfig.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}
