@@ -9,6 +9,7 @@ Requires Node >= 22.12 and pnpm.
 ```
 pnpm install
 pnpm dev          # Vite dev server
+pnpm dev:debug    # dev server on :5174 that also writes browser console/click logs to debug-logs/browser.log (vite.debug.config.ts; nothing in src/ changes)
 pnpm build        # tsc --noEmit (app) && tsc -p tsconfig.core.json (DOM-free core) && vite build
 pnpm preview      # serve the production build
 pnpm test         # Vitest: unit + jsdom component/integration tests (src/**/*.test.ts(x))
@@ -24,9 +25,10 @@ Personal 3D room designer (condo layout: furniture, wallpaper, floor tiles), bui
 
 The room is **data rendered by a builder** (ADR 0004), edited through a **pure core** (ADR 0006):
 - `src/roomConfig.ts` — `RoomConfig`, the document: plain data with `readonly` fields (re-exported from `src/room.ts`): height, a floor rectangle, a list of `Wall` segments (id, start, end, thickness) and two colors (ADR 0011).
-- `src/core/` — pure TS with no DOM/React/three.js: `commands.ts` (edits as `{ type, args }` data + `applyCommand`/`describeCommand`), `history.ts` (snapshot undo/redo), `auditLog.ts` (append-only), `store.ts` (`createStore`: present state, dispatch/undo/redo, audit log, subscribe), `shortcuts.ts` (key -> undo/redo), `viewState.ts` (selection/hover/tool, kept apart from the document).
+- `src/core/` — pure TS with no DOM/React/three.js: `commands.ts` (edits as `{ type, args }` data + `applyCommand`/`describeCommand`), `history.ts` (snapshot undo/redo), `auditLog.ts` (append-only), `store.ts` (`createStore`: present state, dispatch/undo/redo, audit log, subscribe), `shortcuts.ts` (key -> undo/redo), `viewState.ts` (selection/hover/tool and the first point of a wall being drawn, kept apart from the document), `drawWall.ts` (snap to a 10 cm grid, wall ids, the two-click draw-wall logic that dispatches `addWall`).
 - `src/layout.ts` — pure `layoutRoom(config)` -> `Part[]` (id, size, position, rotationY, color); no three.js.
 - `src/room.ts` — `buildRoom(config)`: maps the parts to a `THREE.Group` of meshes (mesh name = part id).
+- `src/floorPicking.ts` — three.js ray-cast from a click to the floor plane (y = 0); `main.ts` hooks it to `clickFloor` and disables OrbitControls while the draw-wall tool is on.
 - `src/app.ts` — `createApp({ uiElement, scene, store })`: subscribes the store to the scene, mounts the UI, handles Ctrl/Cmd+Z and +Shift+Z. Needs no renderer.
 - `src/main.ts` — thin shell: renderer, camera, OrbitControls, lights, resize, render loop; creates the store and calls `createApp`.
 - `src/defaultRoom.ts` — the hard-coded sample `RoomConfig`.

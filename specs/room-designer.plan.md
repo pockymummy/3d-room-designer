@@ -114,3 +114,18 @@ Notes for all scenarios:
     - expect: blue-dominant pixels increase by more than 5000
   3. Press Ctrl+Z.
     - expect: blue-dominant pixels return to within 500 of the original
+
+### 5. Walls
+
+**Seed:** `tests/seed.spec.ts`
+
+#### 5.1. draw-wall-adds-a-wall
+
+**File:** `tests/walls/draw-wall-adds-a-wall.spec.ts`
+
+**Steps:**
+  1. Open the app (seed) and capture the canvas area.
+  2. Click the "Draw wall" button, then click two points on the floor (canvas pixels (628,376) and (655,473) at 1280x720, floor positions (-1,-1) and (1,1)).
+    - expect: more than 500 pixels differ from the first capture
+  3. Press Ctrl+Z.
+    - expect: fewer than 50 pixels differ from the first capture

@@ -49,3 +49,29 @@ export async function pixelStats(page: Page, png: Buffer): Promise<PixelStats> {
 export async function sceneStats(page: Page): Promise<PixelStats> {
   return pixelStats(page, await captureScene(page));
 }
+
+/** Number of pixels that differ between two captures of the same size. */
+export async function diffPixels(page: Page, a: Buffer, b: Buffer): Promise<number> {
+  return page.evaluate(
+    async ([aBase64, bBase64]) => {
+      const load = async (base64: string) => {
+        const img = new Image();
+        img.src = `data:image/png;base64,${base64}`;
+        await img.decode();
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+        return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      };
+      const [da, db] = await Promise.all([load(aBase64!), load(bBase64!)]);
+      let differing = 0;
+      for (let i = 0; i < da.length; i += 4) {
+        if (da[i] !== db[i] || da[i + 1] !== db[i + 1] || da[i + 2] !== db[i + 2]) differing++;
+      }
+      return differing;
+    },
+    [a.toString('base64'), b.toString('base64')],
+  );
+}

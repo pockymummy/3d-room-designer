@@ -7,14 +7,24 @@ import { createViewStore } from './viewState';
 
 describe('view store', () => {
   it('starts with nothing selected or hovered and the select tool', () => {
-    expect(createViewStore().get()).toEqual({ selectedId: null, hoverId: null, tool: 'select' });
+    expect(createViewStore().get()).toEqual({
+      selectedId: null,
+      hoverId: null,
+      tool: 'select',
+      wallStart: null,
+    });
   });
 
   it('set merges a patch into the state', () => {
     const view = createViewStore();
     view.set({ selectedId: 'wall-north' });
     view.set({ tool: 'move' });
-    expect(view.get()).toEqual({ selectedId: 'wall-north', hoverId: null, tool: 'move' });
+    expect(view.get()).toEqual({
+      selectedId: 'wall-north',
+      hoverId: null,
+      tool: 'move',
+      wallStart: null,
+    });
   });
 
   it('notifies subscribers on every set', () => {
@@ -61,6 +71,7 @@ describe('view state vs document state', () => {
     expectTypeOf<RoomConfig>().not.toHaveProperty('selectedId');
     expectTypeOf<RoomConfig>().not.toHaveProperty('hoverId');
     expectTypeOf<RoomConfig>().not.toHaveProperty('tool');
+    expectTypeOf<RoomConfig>().not.toHaveProperty('wallStart');
     expectTypeOf<RoomConfig>().not.toHaveProperty('camera');
   });
 });

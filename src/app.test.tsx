@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createApp } from './app';
 import { createStore } from './core/store';
+import { createViewStore } from './core/viewState';
 import { defaultRoom } from './defaultRoom';
 
 /**
@@ -25,10 +26,11 @@ describe('createApp', () => {
     document.body.appendChild(uiElement);
     const scene = new THREE.Scene();
     const store = createStore(defaultRoom, { now: () => 0 });
+    const view = createViewStore();
     await act(async () => {
-      dispose = createApp({ uiElement, scene, store }).dispose;
+      dispose = createApp({ uiElement, scene, store, view }).dispose;
     });
-    return { scene, store };
+    return { scene, store, view };
   };
 
   const wallColor = (scene: THREE.Scene) =>
@@ -105,5 +107,29 @@ describe('createApp', () => {
     press({ key: 'z', ctrlKey: true });
     expect(store.getState().present.wallColor).toBe(0x0000ff); // undo was not applied
     expect(scene.getObjectByName('room')).toBeUndefined(); // dispose removed the room
+  });
+
+  it('toggles the draw-wall tool in view state from the button, without touching the document', async () => {
+    const { store, view } = await start();
+    const button = screen.getByRole('button', { name: 'Draw wall' });
+    fireEvent.click(button);
+    expect(view.get().tool).toBe('draw-wall');
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(store.getState().auditLog).toEqual([]);
+
+    fireEvent.click(button);
+    expect(view.get().tool).toBe('select');
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('shows a wall added to the store as a mesh in the scene', async () => {
+    const { scene, store } = await start();
+    await act(async () => {
+      store.dispatch({
+        type: 'addWall',
+        args: { wall: { id: 'wall-1', start: { x: 0, z: 0 }, end: { x: 2, z: 0 }, thickness: 0.1 } },
+      });
+    });
+    expect(scene.getObjectByName('wall-1')).toBeDefined();
   });
 });

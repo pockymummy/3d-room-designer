@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { defaultRoom } from '../defaultRoom';
-import { setColor } from './commands';
+import { addWall, setColor } from './commands';
 import { createStore } from './store';
 
 const makeStore = (options = {}) => {
@@ -160,5 +160,20 @@ describe('store history cap', () => {
     store.undo(); // nothing left: the cap dropped older states
     expect(store.getState().present.wallColor).toBe(2);
     expect(store.getState().auditLog.filter((e) => e.type === 'setColor')).toHaveLength(4);
+  });
+});
+
+describe('store with walls', () => {
+  it('undoes and redoes adding a wall', () => {
+    const store = makeStore();
+    const wall = { id: 'wall-1', start: { x: 0, z: 0 }, end: { x: 1, z: 0 }, thickness: 0.1 };
+    store.dispatch(addWall(wall));
+    expect(store.getState().present.walls).toHaveLength(5);
+
+    store.undo();
+    expect(store.getState().present.walls).toEqual(defaultRoom.walls);
+
+    store.redo();
+    expect(store.getState().present.walls).toContainEqual(wall);
   });
 });

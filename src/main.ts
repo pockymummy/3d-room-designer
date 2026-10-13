@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createApp } from './app';
+import { clickFloor } from './core/drawWall';
 import { createStore } from './core/store';
+import { createViewStore } from './core/viewState';
 import { defaultRoom } from './defaultRoom';
+import { onFloorClick } from './floorPicking';
 
 const container = document.getElementById('app')!;
 
@@ -28,11 +31,16 @@ sun.position.set(5, 8, 4);
 sun.castShadow = true;
 scene.add(sun);
 
-createApp({
-  uiElement: document.getElementById('ui')!,
-  scene,
-  store: createStore(defaultRoom),
-});
+const store = createStore(defaultRoom);
+const view = createViewStore();
+createApp({ uiElement: document.getElementById('ui')!, scene, store, view });
+
+// While the draw-wall tool is on, clicks place wall points and the camera must not orbit.
+const syncControls = () => {
+  controls.enabled = view.get().tool !== 'draw-wall';
+};
+view.subscribe(syncControls);
+onFloorClick(renderer.domElement, camera, (point) => clickFloor(view, store, point));
 
 function resize() {
   const { clientWidth: w, clientHeight: h } = container;

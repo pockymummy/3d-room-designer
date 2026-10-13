@@ -3,5 +3,6 @@ dist
 *.local
 test-results
 playwright-report
+debug-logs
 .playwright-cli
 .claude/settings.local.json

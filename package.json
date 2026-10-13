@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:debug": "vite --config vite.debug.config.ts",
     "build": "tsc --noEmit && tsc -p tsconfig.core.json --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",

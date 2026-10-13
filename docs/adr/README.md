@@ -20,3 +20,5 @@ Status values: `Proposed`, `Accepted`, `Deprecated`, `Superseded by NNNN`.
 | [0009](0009-in-page-color-picker-react-colorful.md) | In-page color picker (react-colorful) | Accepted |
 | [0010](0010-test-first-development.md) | Test-first development (TDD) | Accepted |
 | [0011](0011-room-as-wall-list.md) | Describe walls as a list of segments | Accepted |
+| [0012](0012-draw-wall-tool.md) | Draw-wall tool: two clicks, view state until the second | Accepted |
+| [0013](0013-debug-dev-server-with-browser-log-file.md) | A separate debug dev server that logs the browser to a file | Accepted |

@@ -1,4 +1,5 @@
 import type { PartId } from '../layout';
+import type { Point } from '../roomConfig';
 
 /**
  * How the user is looking at and pointing at the room right now. Never saved, never
@@ -8,7 +9,9 @@ import type { PartId } from '../layout';
 export interface ViewState {
   readonly selectedId: PartId | null;
   readonly hoverId: PartId | null;
-  readonly tool: 'select' | 'move';
+  readonly tool: 'select' | 'move' | 'draw-wall';
+  /** The first click of a wall being drawn; the wall is not in the document until the second. */
+  readonly wallStart: Point | null;
 }
 
 export interface ViewStore {
@@ -18,7 +21,7 @@ export interface ViewStore {
 }
 
 export function createViewStore(
-  initial: ViewState = { selectedId: null, hoverId: null, tool: 'select' },
+  initial: ViewState = { selectedId: null, hoverId: null, tool: 'select', wallStart: null },
 ): ViewStore {
   let state = initial;
   const listeners = new Set<() => void>();
