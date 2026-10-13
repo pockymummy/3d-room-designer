@@ -9,7 +9,9 @@ const color = (mesh: THREE.Mesh) => (mesh.material as THREE.MeshStandardMaterial
 
 /** Pins today's buildRoom behaviour: child 0 is the floor, children 1..4 are the walls. */
 describe('buildRoom', () => {
-  const { width, length, height, wallThickness: t, wallColor, floorColor } = defaultRoom;
+  const { height, wallColor, floorColor } = defaultRoom;
+  const { width, length } = defaultRoom.floor;
+  const t = defaultRoom.walls[0]!.thickness;
 
   it('returns a group named room with a floor and four walls', () => {
     const room = buildRoom(defaultRoom);
@@ -60,7 +62,7 @@ describe('buildRoom', () => {
   });
 
   it('scales the floor when the width changes', () => {
-    const size = box(meshes({ ...defaultRoom, width: 6 })[0]!).getSize(new THREE.Vector3());
+    const size = box(meshes({ ...defaultRoom, floor: { width: 6, length: defaultRoom.floor.length } })[0]!).getSize(new THREE.Vector3());
     expect(size.x).toBeCloseTo(6);
   });
 });

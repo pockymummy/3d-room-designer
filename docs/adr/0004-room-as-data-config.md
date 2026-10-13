@@ -14,4 +14,4 @@ Future phases add a 2D floor-plan editor, material swapping, furniture, save/loa
 ## Consequences
 - Saving, loading and undo/redo reduce to serializing and swapping config objects.
 - A later UI layer (e.g. React) can own the data and call the same builder.
-- The config is deliberately minimal now (rectangular room, flat colors) and will be extended or replaced by a wall/polygon model when the floor-plan editor arrives.
+- The config is deliberately minimal now (rectangular room, flat colors) and will be extended or replaced by a wall/polygon model when the floor-plan editor arrives. (Update: ADR 0011 replaced the rectangle with a list of wall segments.)

@@ -23,9 +23,9 @@ Run all four checks (`pnpm test`, `pnpm check:arch`, `pnpm build`, `pnpm e2e`) b
 Personal 3D room designer (condo layout: furniture, wallpaper, floor tiles), built with vanilla Three.js + Vite + TypeScript, with React for UI panels only (ADR 0002, ADR 0005).
 
 The room is **data rendered by a builder** (ADR 0004), edited through a **pure core** (ADR 0006):
-- `src/roomConfig.ts` — `RoomConfig`, the document: plain data with `readonly` fields (re-exported from `src/room.ts`).
+- `src/roomConfig.ts` — `RoomConfig`, the document: plain data with `readonly` fields (re-exported from `src/room.ts`): height, a floor rectangle, a list of `Wall` segments (id, start, end, thickness) and two colors (ADR 0011).
 - `src/core/` — pure TS with no DOM/React/three.js: `commands.ts` (edits as `{ type, args }` data + `applyCommand`/`describeCommand`), `history.ts` (snapshot undo/redo), `auditLog.ts` (append-only), `store.ts` (`createStore`: present state, dispatch/undo/redo, audit log, subscribe), `shortcuts.ts` (key -> undo/redo), `viewState.ts` (selection/hover/tool, kept apart from the document).
-- `src/layout.ts` — pure `layoutRoom(config)` -> `Part[]` (id, size, position, color); no three.js.
+- `src/layout.ts` — pure `layoutRoom(config)` -> `Part[]` (id, size, position, rotationY, color); no three.js.
 - `src/room.ts` — `buildRoom(config)`: maps the parts to a `THREE.Group` of meshes (mesh name = part id).
 - `src/app.ts` — `createApp({ uiElement, scene, store })`: subscribes the store to the scene, mounts the UI, handles Ctrl/Cmd+Z and +Shift+Z. Needs no renderer.
 - `src/main.ts` — thin shell: renderer, camera, OrbitControls, lights, resize, render loop; creates the store and calls `createApp`.
@@ -33,7 +33,7 @@ The room is **data rendered by a builder** (ADR 0004), edited through a **pure c
 - `src/ui/` — React panels (`mountUi`, `ColorPanel` using react-colorful, ADR 0009). They dispatch commands to the store and never touch scene objects.
 - `tests/` + `specs/` — Playwright tests, one per file, and the scenario plan (ADR 0008).
 
-Future features (floor-plan editor, material swapping, furniture, save/load) add commands and keep room state in `RoomConfig`, never in scene objects. The config is intentionally minimal (rectangular room, flat colors) and may be replaced by a wall/polygon model.
+Future features (floor-plan editor, material swapping, furniture, save/load) add commands and keep room state in `RoomConfig`, never in scene objects. The config is intentionally minimal (a stored floor rectangle, a wall list, flat global colors); deriving the floor from walls or a polygon outline is deferred (ADR 0011).
 
 ## Conventions
 

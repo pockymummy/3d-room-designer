@@ -16,6 +16,7 @@ export function buildRoom(config: RoomConfig): THREE.Group {
     );
     mesh.name = part.id;
     mesh.position.set(...part.position);
+    mesh.rotation.y = part.rotationY;
     mesh.receiveShadow = true;
     mesh.castShadow = part.id !== 'floor';
     room.add(mesh);

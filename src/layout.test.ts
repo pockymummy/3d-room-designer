@@ -5,7 +5,9 @@ import { layoutRoom, type Part, type PartId } from './layout';
 const part = (id: PartId, parts: Part[]) => parts.find((p) => p.id === id)!;
 
 describe('layoutRoom', () => {
-  const { width, length, height, wallThickness: t, wallColor, floorColor } = defaultRoom;
+  const { height, wallColor, floorColor } = defaultRoom;
+  const { width, length } = defaultRoom.floor;
+  const t = defaultRoom.walls[0]!.thickness;
   const parts = layoutRoom(defaultRoom);
 
   it('returns a floor and four walls with stable ids', () => {
@@ -51,8 +53,44 @@ describe('layoutRoom', () => {
   });
 
   it('follows the config', () => {
-    const bigger = layoutRoom({ ...defaultRoom, width: 6, length: 8 });
+    const bigger = layoutRoom({ ...defaultRoom, floor: { width: 6, length: 8 } });
     expect(part('floor', bigger).size[0]).toBeCloseTo(6);
-    expect(part('wall-north', bigger).position[2]).toBeCloseTo(-(8 / 2 + t / 2));
+  });
+
+  it('makes one wall part per entry in config.walls, with the wall id as the part id', () => {
+    const walls = [
+      { id: 'a', start: { x: 0, z: 0 }, end: { x: 3, z: 0 }, thickness: 0.2 },
+      { id: 'b', start: { x: 0, z: 0 }, end: { x: 0, z: 2 }, thickness: 0.1 },
+    ];
+    const result = layoutRoom({ ...defaultRoom, walls });
+    expect(result.map((p) => p.id)).toEqual(['floor', 'a', 'b']);
+  });
+
+  it('sizes and centres a wall from its segment, height and thickness', () => {
+    const wall = { id: 'a', start: { x: 1, z: 2 }, end: { x: 4, z: 2 }, thickness: 0.2 };
+    const a = part('a', layoutRoom({ ...defaultRoom, walls: [wall] }));
+    expect(a.size).toEqual([3, height, 0.2]);
+    expect(a.position).toEqual([2.5, height / 2, 2]);
+    expect(a.rotationY).toBe(0);
+  });
+
+  it('keeps a wall along z unrotated, with its length on z', () => {
+    const wall = { id: 'a', start: { x: 1, z: 0 }, end: { x: 1, z: 4 }, thickness: 0.2 };
+    const a = part('a', layoutRoom({ ...defaultRoom, walls: [wall] }));
+    expect(a.size).toEqual([0.2, height, 4]);
+    expect(a.position).toEqual([1, height / 2, 2]);
+    expect(a.rotationY).toBe(0);
+  });
+
+  it('rotates a diagonal wall about Y so its length runs from start to end', () => {
+    const wall = { id: 'a', start: { x: -1, z: -1 }, end: { x: 1, z: 1 }, thickness: 0.1 };
+    const a = part('a', layoutRoom({ ...defaultRoom, walls: [wall] }));
+    expect(a.size[0]).toBeCloseTo(Math.hypot(2, 2));
+    expect(a.size[2]).toBeCloseTo(0.1);
+    expect(a.position).toEqual([0, height / 2, 0]);
+    // three.js rotation about +Y maps the local +x axis to (cos r, 0, -sin r)
+    const r = a.rotationY;
+    expect(Math.cos(r)).toBeCloseTo(1 / Math.SQRT2);
+    expect(-Math.sin(r)).toBeCloseTo(1 / Math.SQRT2);
   });
 });
