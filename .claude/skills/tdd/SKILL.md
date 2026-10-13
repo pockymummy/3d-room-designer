@@ -17,6 +17,8 @@ Why we work this way: ADR 0010 (`docs/adr/0010-test-first-development.md`). Tool
 
 Never add test-only hooks (like `window.__app`) to app code.
 
+Design uncertain, or the refactor shape unclear? Use the `spike` skill first; it ends by handing back here for a refactor round and a feature round.
+
 ## 2. The cycle (one behavior at a time)
 1. **Existing code you will refactor:** first write a PIN, a characterization test that passes today. Refactor only under it.
 2. **Red:** write ONE failing test. Run it. Confirm it fails for the right reason (missing behavior, not a typo or import error). Write the test and the code in separate steps, never together.

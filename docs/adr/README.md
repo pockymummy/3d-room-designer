@@ -22,3 +22,4 @@ Status values: `Proposed`, `Accepted`, `Deprecated`, `Superseded by NNNN`.
 | [0011](0011-room-as-wall-list.md) | Describe walls as a list of segments | Accepted |
 | [0012](0012-draw-wall-tool.md) | Draw-wall tool: two clicks, view state until the second | Accepted |
 | [0013](0013-debug-dev-server-with-browser-log-file.md) | A separate debug dev server that logs the browser to a file | Accepted |
+| [0014](0014-spike-with-three-parallel-attempts.md) | Spike with three parallel attempts, then two rounds of TDD | Accepted |
