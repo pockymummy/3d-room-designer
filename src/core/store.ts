@@ -50,7 +50,9 @@ export function createStore(initial: RoomConfig, options: StoreOptions = {}): St
   return {
     getState: () => state,
     dispatch(command, source = 'ui') {
-      history = commit(history, applyCommand(history.present, command), historyCap);
+      const next = applyCommand(history.present, command);
+      if (next === history.present) return; // no change: no undo step, audit entry or rebuild
+      history = commit(history, next, historyCap);
       record(command, source);
     },
     undo(source = 'ui') {

@@ -49,6 +49,16 @@ describe('store dispatch', () => {
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
+  it('ignores a command that changes nothing: no undo step, audit entry or notification', () => {
+    const store = makeStore();
+    const listener = vi.fn();
+    store.subscribe(listener);
+    store.dispatch(setColor('wallColor', defaultRoom.wallColor));
+    expect(store.getState().canUndo).toBe(false);
+    expect(store.getState().auditLog).toEqual([]);
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   it('stops notifying after unsubscribe', () => {
     const store = makeStore();
     const listener = vi.fn();

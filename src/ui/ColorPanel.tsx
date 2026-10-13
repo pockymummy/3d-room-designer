@@ -27,12 +27,18 @@ interface FieldProps {
 function ColorField({ label, value, onCommit }: FieldProps) {
   // null means "show the document's color"; it is also how undo/redo reaches the display.
   const [draft, setDraft] = useState<string | null>(null);
+  // A new document color (undo/redo) supersedes any uncommitted draft. Adjusting state
+  // during render is React's documented way to reset state when a prop changes.
+  const [seen, setSeen] = useState(value);
+  if (seen !== value) {
+    setSeen(value);
+    setDraft(null);
+  }
   const shown = draft ?? toHex(value);
 
   const commit = (hex: string) => {
     setDraft(null);
-    const next = parseHex(hex);
-    if (next !== value) onCommit(next);
+    onCommit(parseHex(hex)); // the store ignores a command that changes nothing
   };
 
   const commitDraft = () => {

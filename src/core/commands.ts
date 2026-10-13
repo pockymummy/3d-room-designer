@@ -21,6 +21,7 @@ function assertNever(x: never): never {
 export function applyCommand(config: Readonly<RoomConfig>, cmd: Command): RoomConfig {
   switch (cmd.type) {
     case 'setColor':
+      if (config[cmd.args.key] === cmd.args.value) return config as RoomConfig;
       return { ...config, [cmd.args.key]: cmd.args.value };
     default:
       return assertNever(cmd.type);

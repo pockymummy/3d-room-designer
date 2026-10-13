@@ -50,6 +50,18 @@ describe('history', () => {
     expect(h.present).toBe(4);
   });
 
+  it('keeps only the newest entry with a cap of 1', () => {
+    let h = createHistory(0);
+    for (const n of [1, 2, 3]) h = commit(h, n, 1);
+    expect(h.past).toEqual([2]);
+  });
+
+  it('keeps no past with a cap of 0, so there is nothing to undo', () => {
+    const h = commit(createHistory('a'), 'b', 0);
+    expect(h).toEqual({ past: [], present: 'b', future: [] });
+    expect(undo(h)).toBe(h);
+  });
+
   it('does not mutate the history it is given', () => {
     const h = Object.freeze({ past: Object.freeze(['a']), present: 'b', future: Object.freeze([]) });
     expect(() => commit(h, 'c')).not.toThrow();

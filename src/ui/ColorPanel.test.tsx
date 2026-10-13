@@ -30,6 +30,15 @@ describe('ColorPanel display', () => {
     expect(wallHex().value).toBe('#0000ff');
   });
 
+  it('drops an uncommitted typed color when the parent passes a new state (undo while typing)', () => {
+    const { dispatch, rerender } = setup();
+    type(wallHex(), '#ff0000');
+    rerender(<ColorPanel state={{ ...defaultRoom, wallColor: 0x0000ff }} dispatch={dispatch} />);
+    expect(wallHex().value).toBe('#0000ff');
+    fireEvent.blur(wallHex());
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
   it('has an in-page picker per color, not a native color input', () => {
     setup();
     expect(document.querySelector('input[type="color"]')).toBeNull();
@@ -71,11 +80,9 @@ describe('ColorPanel hex input', () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it('dispatches nothing when the color did not change', () => {
+  it('dispatches nothing when Enter is pressed without typing', () => {
     const { dispatch } = setup();
     fireEvent.keyDown(wallHex(), { key: 'Enter' });
-    type(wallHex(), '#f2eee6');
-    fireEvent.blur(wallHex());
     expect(dispatch).not.toHaveBeenCalled();
   });
 

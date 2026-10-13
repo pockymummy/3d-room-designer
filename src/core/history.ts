@@ -16,7 +16,9 @@ export function createHistory<T>(present: T): History<T> {
  * Only the newest `cap` past states are kept.
  */
 export function commit<T>(h: History<T>, next: T, cap = DEFAULT_HISTORY_CAP): History<T> {
-  return { past: [...h.past, h.present].slice(-cap), present: next, future: [] };
+  // slice(-0) would keep everything, so a cap of 0 is handled explicitly.
+  const past = cap > 0 ? [...h.past, h.present].slice(-cap) : [];
+  return { past, present: next, future: [] };
 }
 
 export function undo<T>(h: History<T>): History<T> {
